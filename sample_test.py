@@ -47,7 +47,7 @@ class SampleTests(unittest.TestCase):
     message = 'have some secret data: %s' % random.randint(0, 1e6)
     self.node_one.sms(self.node_two.phone_number, message)
     # Block until that specific message is received.
-    self.assertTrue(self.node_two.wait_for_activity('sms', body=message))
+    self.assertTrue(self.node_two.wait_for_activity('sms', text=message))
 
   def test_call(self):
     """We can make a call from one node to another."""

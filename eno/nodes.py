@@ -79,7 +79,7 @@ class Node(object):
       activity: one of sms, call or data
 
     Kwargs:
-      body: blocks until an SMS with this particular message is received
+      text: blocks until an SMS with this particular text is received
       sender: blocks until a call from this number is received
       target: blocks until data from this target is received
       timeout: the max amount of time to block (default: 10s)
