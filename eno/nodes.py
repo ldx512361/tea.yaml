@@ -1,5 +1,7 @@
 """Abstraction of a remote eno hardware node."""
 
+import requests
+
 
 class Node(object):
   """Representation of a remote eno hardware node.
@@ -15,6 +17,14 @@ class Node(object):
 
   def sms(self, phone_number, message):
     """Send an SMS."""
+    data = {
+      'phone_number': phone_number,
+      'message': message,
+    }
+    endpoint = '%s/sms' % self.ip_address
+    response = requests.post(endpoint, data=data)
+    if response.status_code != 200:
+      raise ValueError
 
   def call(self, phone_number, **kwargs):
     """Make a call.
@@ -23,12 +33,25 @@ class Node(object):
       phone_number: the number to call
 
     Kwargs:
-      hangup: whether to hangup immediately after the call is answered (default
-              is True)
+      hangup_immediately: whether to hangup immediately after the call is
+                          answered (default is True)
     """
+    hangup_immediately = kwargs.get('hangup_immediately', True)
+    data = {
+      'phone_number': phone_number,
+      'hangup_immediately': hangup_immediately,
+    }
+    endpoint = '%s/call' % self.ip_address
+    response = requests.post(endpoint, data=data)
+    if response.status_code != 200:
+      raise ValueError
 
   def hangup(self):
     """Terminates any ongoing call."""
+    endpoint = '%s/hangup' % self.ip_address
+    response = requests.post(endpoint)
+    if response.status_code != 200:
+      raise ValueError
 
   def data(self, target):
     """Use data services.
@@ -36,6 +59,13 @@ class Node(object):
     Args:
       target: will send an HTTP GET to this address
     """
+    data = {
+      'target': target,
+    }
+    endpoint = '%s/data' % self.ip_address
+    response = requests.post(endpoint, data=data)
+    if response.status_code != 200:
+      raise ValueError
 
   def wait_for_activity(self, activity, **kwargs):
     """Block until some activity completes.
@@ -59,6 +89,13 @@ class Node(object):
     Args:
       activity: one of sms, call or data
     """
+    if activity not in ('sms', 'call', 'data'):
+      raise ValueError
+    endpoint = '%s/log/%s' % (self.ip_address, activity)
+    response = requests.get(endpoint)
+    if response.status_code != 200:
+      raise ValueError
+    return response.json()
 
   def reset_log(self, activity):
     """Resets an activity log.
@@ -66,7 +103,12 @@ class Node(object):
     Args:
       activity: one of sms, call or data
     """
-
+    if activity not in ('sms', 'call', 'data'):
+      raise ValueError
+    endpoint = '%s/log/%s' % (self.ip_address, activity)
+    response = requests.delete(endpoint)
+    if response.status_code != 200:
+      raise ValueError
 
 def get_node(name):
   """Shortcut method to get an eno node's data.

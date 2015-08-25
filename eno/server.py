@@ -25,17 +25,26 @@ def index():
 
 @app.route('/sms', methods=['POST'])
 def sms():
-  """Send an SMS."""
+  """Send an SMS.
+
+  Expected POST data: phone_number, message
+  """
 
 
 @app.route('/call', methods=['POST'])
 def call():
-  """Initiate a call."""
+  """Initiate a call.
+
+  Expected POST data: phone_number, hangup_immediately
+  """
 
 
 @app.route('/hangup', methods=['POST'])
 def hangup():
-  """Hangup any in-progress calls."""
+  """Hangup any in-progress calls.
+
+  Expected POST data: (none)
+  """
 
 
 @app.route('/data', methods=['POST'])
