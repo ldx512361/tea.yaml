@@ -1,6 +1,7 @@
 """Abstraction of a remote eno hardware node."""
 
 import requests
+import yaml
 
 
 class Node(object):
@@ -10,10 +11,11 @@ class Node(object):
   hardware itself does not use this class, it instead uses the control server.
   """
 
-  def __init__(self):
-    self.ip_address = ''
-    self.sim = ''
-    self.phone_number = ''
+  def __init__(self, **kwargs):
+    self.name = kwargs.pop('name', '')
+    self.ip_address = kwargs.pop('ip_address', '')
+    self.sim = kwargs.pop('sim', '')
+    self.phone_number = kwargs.pop('phone_number', '')
 
   def sms(self, phone_number, message):
     """Send an SMS."""
@@ -110,6 +112,7 @@ class Node(object):
     if response.status_code != 200:
       raise ValueError
 
+
 def get_node(name):
   """Shortcut method to get an eno node's data.
 
@@ -118,3 +121,20 @@ def get_node(name):
 
   Returns a Node instance.
   """
+  with open('~/.enorc') as config_file:
+    config_data = yaml.load(config_file.read())
+  # Verify that the requested name is actually in the config file.
+  names = [n['name'] for n in config_data]
+  if name not in names:
+    raise ValueError
+  # Instantiate a Node.
+  for node_data in config_data:
+    if name != node_data['name']:
+      continue
+    # The phone_number key is optional and may not appear in the config file.
+    phone_number = ''
+    if 'phone_number' in node_data:
+      phone_number = node_data['phone_number']
+    node = Node(name=name, ip_address=node_data['ip_address'],
+                sim=node_data['sim'], phone_number=phone_number)
+    return node
