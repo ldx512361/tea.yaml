@@ -7,7 +7,7 @@ with open('readme.md') as f:
   README = f.read()
 
 
-VERSION = '0.0.3'
+VERSION = '0.0.4'
 
 
 setup(
@@ -32,6 +32,7 @@ setup(
     "itsdangerous==0.24",
     "pyserial==2.7",
     "python-gsmmodem==0.9",
+    "requests==2.7.0",
     "wsgiref==0.1.2",
   ],
   zip_safe=False,
