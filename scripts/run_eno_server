@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 
-import eno
+from eno import server
 
 
 if __name__ == '__main__':
-  eno.server.app.run(host='0.0.0.0')
+  server.app.run(host='0.0.0.0')
