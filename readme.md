@@ -47,6 +47,7 @@ MIT
 
 
 ### releases
+* 0.0.6 - improves error handling and modem connection management
 * 0.0.5 - adjusts package structure
 * 0.0.4 - adds missing requests requirement
 * 0.0.3 - adjusts server script filename
