@@ -36,6 +36,6 @@ setup(
   ],
   zip_safe=False,
   scripts=[
-    'scripts/run_server.py',
+    'scripts/run_eno_server.py',
   ]
 )
