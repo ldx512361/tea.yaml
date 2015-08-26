@@ -47,6 +47,7 @@ MIT
 
 
 ### releases
+* 0.0.2 - adds SMS handling capabilities
 * 0.0.1 - barebones setup for pypi
 
 
