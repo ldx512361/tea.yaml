@@ -17,6 +17,7 @@ import logging
 import Adafruit_BBIO.UART as UART
 import flask
 from gsmmodem.modem import GsmModem
+from gsmmodem.modem import CmsError
 
 
 PORT = 'UART1'
@@ -58,8 +59,12 @@ def sms():
   try:
     phone_number = flask.request.form['phone_number']
     message = flask.request.form['message']
-    modem.sendSms(phone_number, message)
-    return ''
+    try:
+      modem.sendSms(phone_number, message)
+      return ''
+    except CmsError as error:
+      # CMS error 2172 is raised if there is no network coverage.
+      return 'error: %s' % str(error), 503
   finally:
     modem.close()
 
