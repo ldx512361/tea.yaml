@@ -53,13 +53,15 @@ def sms():
 
   Expected POST data: phone_number, message
   """
-  phone_number = flask.request.form['phone_number']
-  message = flask.request.form['message']
   modem = GsmModem(DEVICE, BAUD)
   modem.connect()
-  modem.sendSms(phone_number, message)
-  modem.close()
-  return ''
+  try:
+    phone_number = flask.request.form['phone_number']
+    message = flask.request.form['message']
+    modem.sendSms(phone_number, message)
+    return ''
+  finally:
+    modem.close()
 
 
 @app.route('/call', methods=['POST'])
@@ -96,19 +98,21 @@ def log(activity):
   modem = GsmModem(DEVICE, BAUD)
   modem.connect()
   # View the SMS log.
-  if flask.request.method == 'GET' and activity == 'sms':
-    messages = []
-    for message in modem.listStoredSms():
-      messages.append({
-        'time': message.time,
-        'number': message.number,
-        'text': message.text,
-      })
+  try:
+    if flask.request.method == 'GET' and activity == 'sms':
+      messages = []
+      for message in modem.listStoredSms():
+        messages.append({
+          'time': message.time,
+          'number': message.number,
+          'text': message.text,
+        })
+      return flask.jsonify(
+        messages=messages,
+      )
+    # Clear the SMS log.
+    elif flask.request.method == 'DELETE' and activity == 'sms':
+      modem.listStoredSms(delete=True)
+      return ''
+  finally:
     modem.close()
-    return flask.jsonify(
-      messages=messages,
-    )
-  # Clear the SMS log.
-  elif flask.request.method == 'DELETE' and activity == 'sms':
-    modem.listStoredSms(delete=True)
-    return ''
