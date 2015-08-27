@@ -1,5 +1,6 @@
 """Abstraction of a remote eno hardware node."""
 
+import os
 import time
 
 import requests
@@ -139,7 +140,7 @@ def get_node(name):
 
   Returns a Node instance.
   """
-  with open('~/.enorc') as config_file:
+  with open(os.path.expanduser('~/.enorc')) as config_file:
     config_data = yaml.load(config_file.read())
   # Verify that the requested name is actually in the config file.
   names = [n['name'] for n in config_data]
