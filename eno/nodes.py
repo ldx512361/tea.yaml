@@ -14,8 +14,10 @@ class Node(object):
   def __init__(self, **kwargs):
     self.name = kwargs.pop('name', '')
     self.ip_address = kwargs.pop('ip_address', '')
+    self.port = kwargs.pop('port', '5000')
     self.sim = kwargs.pop('sim', '')
     self.phone_number = kwargs.pop('phone_number', '')
+    self.server_address = '%s:%s' % (self.ip_address, self.port)
 
   def sms(self, phone_number, message):
     """Send an SMS."""
@@ -23,7 +25,7 @@ class Node(object):
       'phone_number': phone_number,
       'message': message,
     }
-    endpoint = '%s/sms' % self.ip_address
+    endpoint = '%s/sms' % self.server_address
     response = requests.post(endpoint, data=data)
     if response.status_code != 200:
       raise ValueError
@@ -43,14 +45,14 @@ class Node(object):
       'phone_number': phone_number,
       'hangup_immediately': hangup_immediately,
     }
-    endpoint = '%s/call' % self.ip_address
+    endpoint = '%s/call' % self.server_address
     response = requests.post(endpoint, data=data)
     if response.status_code != 200:
       raise ValueError
 
   def hangup(self):
     """Terminates any ongoing call."""
-    endpoint = '%s/hangup' % self.ip_address
+    endpoint = '%s/hangup' % self.server_address
     response = requests.post(endpoint)
     if response.status_code != 200:
       raise ValueError
@@ -64,7 +66,7 @@ class Node(object):
     data = {
       'target': target,
     }
-    endpoint = '%s/data' % self.ip_address
+    endpoint = '%s/data' % self.server_address
     response = requests.post(endpoint, data=data)
     if response.status_code != 200:
       raise ValueError
@@ -93,7 +95,7 @@ class Node(object):
     """
     if activity not in ('sms', 'call', 'data'):
       raise ValueError
-    endpoint = '%s/log/%s' % (self.ip_address, activity)
+    endpoint = '%s/log/%s' % (self.server_address, activity)
     response = requests.get(endpoint)
     if response.status_code != 200:
       raise ValueError
@@ -107,7 +109,7 @@ class Node(object):
     """
     if activity not in ('sms', 'call', 'data'):
       raise ValueError
-    endpoint = '%s/log/%s' % (self.ip_address, activity)
+    endpoint = '%s/log/%s' % (self.server_address, activity)
     response = requests.delete(endpoint)
     if response.status_code != 200:
       raise ValueError
@@ -131,10 +133,19 @@ def get_node(name):
   for node_data in config_data:
     if name != node_data['name']:
       continue
-    # The phone_number key is optional and may not appear in the config file.
+    # The phone_number and port keys are optional and may not appear in the
+    # config file.
     phone_number = ''
     if 'phone_number' in node_data:
       phone_number = node_data['phone_number']
-    node = Node(name=name, ip_address=node_data['ip_address'],
-                sim=node_data['sim'], phone_number=phone_number)
+    port = ''
+    if 'port' in node_data:
+      port = node_data['port']
+    node = Node(
+      name=name,
+      ip_address=node_data['ip_address'],
+      port=port,
+      sim=node_data['sim'],
+      phone_number=phone_number,
+    )
     return node
