@@ -1,5 +1,7 @@
 """Abstraction of a remote eno hardware node."""
 
+import time
+
 import requests
 import yaml
 
@@ -86,6 +88,20 @@ class Node(object):
       target: blocks until data from this target is received
       timeout: the max amount of time to block (default: 10s)
     """
+    timeout = kwargs.pop('timeout', 10)
+    if activity not in ('sms', 'call', 'data'):
+      raise ValueError
+    if activity == 'sms':
+      # Block until the SMS log has a new entry, or until 10s have elapsed.
+      start_time = time.time()
+      start_log_size = len(self.get_log('sms'))
+      while True:
+        new_log_size = len(self.get_log('sms'))
+        if new_log_size > start_log_size:
+          break
+        elif time.time() > start_time + timeout:
+          break
+        time.sleep(1)
 
   def get_log(self, activity):
     """Gets info from an activity log.
