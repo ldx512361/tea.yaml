@@ -155,7 +155,7 @@ def get_node(name):
     phone_number = ''
     if 'phone_number' in node_data:
       phone_number = node_data['phone_number']
-    port = ''
+    port = '5000'
     if 'port' in node_data:
       port = node_data['port']
     node = Node(
