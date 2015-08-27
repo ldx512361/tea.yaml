@@ -47,6 +47,7 @@ MIT
 
 
 ### releases
+* 0.0.8 - adjusts handling of sms log in Node class
 * 0.0.7 - changes sms log deletion method
 * 0.0.6 - improves error handling and modem connection management
 * 0.0.5 - adjusts package structure

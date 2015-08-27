@@ -99,7 +99,7 @@ class Node(object):
     response = requests.get(endpoint)
     if response.status_code != 200:
       raise ValueError
-    return response.json()
+    return response.json()['messages']
 
   def reset_log(self, activity):
     """Resets an activity log.
