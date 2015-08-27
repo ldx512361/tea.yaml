@@ -116,8 +116,12 @@ def log(activity):
         messages=messages,
       )
     # Clear the SMS log.
+    # Note(matt): the gsmmodem docs suggest using listStoredSms(delete=True)
+    # to clear the sms log but I've had issues with the AT+CMGD used by that
+    # method (you have to specify a valid index, not just 1).  I've found that
+    # processStoredSms does the trick though.
     elif flask.request.method == 'DELETE' and activity == 'sms':
-      modem.listStoredSms(delete=True)
+      modem.processStoredSms()
       return ''
   finally:
     modem.close()
