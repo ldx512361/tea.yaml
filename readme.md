@@ -47,6 +47,7 @@ MIT
 
 
 ### releases
+* 0.0.12 - adds protocol in `Node.server_address`
 * 0.0.11 - fixes port default
 * 0.0.10 - allows tilde expansion when searching for enorc config file
 * 0.0.9 - adds `Node.wait_for_activity` for sms

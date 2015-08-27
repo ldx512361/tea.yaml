@@ -20,7 +20,7 @@ class Node(object):
     self.port = kwargs.pop('port', '5000')
     self.sim = kwargs.pop('sim', '')
     self.phone_number = kwargs.pop('phone_number', '')
-    self.server_address = '%s:%s' % (self.ip_address, self.port)
+    self.server_address = 'http://%s:%s' % (self.ip_address, self.port)
 
   def sms(self, phone_number, message):
     """Send an SMS."""
