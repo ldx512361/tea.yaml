@@ -29,7 +29,7 @@ class Node(object):
       'message': message,
     }
     endpoint = '%s/sms' % self.server_address
-    response = requests.post(endpoint, data=data)
+    response = requests.post(endpoint, data=data, timeout=10)
     if response.status_code != 200:
       raise ValueError
 
@@ -49,14 +49,14 @@ class Node(object):
       'hangup_immediately': hangup_immediately,
     }
     endpoint = '%s/call' % self.server_address
-    response = requests.post(endpoint, data=data)
+    response = requests.post(endpoint, data=data, timeout=10)
     if response.status_code != 200:
       raise ValueError
 
   def hangup(self):
     """Terminates any ongoing call."""
     endpoint = '%s/hangup' % self.server_address
-    response = requests.post(endpoint)
+    response = requests.post(endpoint, timeout=10)
     if response.status_code != 200:
       raise ValueError
 
@@ -70,7 +70,7 @@ class Node(object):
       'target': target,
     }
     endpoint = '%s/data' % self.server_address
-    response = requests.post(endpoint, data=data)
+    response = requests.post(endpoint, data=data, timeout=10)
     if response.status_code != 200:
       raise ValueError
 
@@ -114,7 +114,7 @@ class Node(object):
     if activity not in ('sms', 'call', 'data'):
       raise ValueError
     endpoint = '%s/log/%s' % (self.server_address, activity)
-    response = requests.get(endpoint)
+    response = requests.get(endpoint, timeout=10)
     if response.status_code != 200:
       raise ValueError
     return response.json()['messages']
@@ -128,9 +128,17 @@ class Node(object):
     if activity not in ('sms', 'call', 'data'):
       raise ValueError
     endpoint = '%s/log/%s' % (self.server_address, activity)
-    response = requests.delete(endpoint)
+    response = requests.delete(endpoint, timeout=10)
     if response.status_code != 200:
       raise ValueError
+
+  def get_info(self):
+    """Gets some info on the node."""
+    endpoint = '%s/' % self.server_address
+    response = requests.get(endpoint, timeout=10)
+    if response.status_code != 200:
+      raise ValueError
+    return response.json()
 
 
 def get_node(name):
@@ -166,4 +174,6 @@ def get_node(name):
       sim=node_data['sim'],
       phone_number=phone_number,
     )
+    # Try to get basic node info, just to make sure we have connectivity.
+    node.get_info()
     return node

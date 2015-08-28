@@ -47,6 +47,7 @@ MIT
 
 
 ### releases
+* 0.0.14 - adds more request timeouts and `Node.get_info`
 * 0.0.13 - adjusts handling of `Node.wait_for_activity`
 * 0.0.12 - adds protocol in `Node.server_address`
 * 0.0.11 - fixes port default
