@@ -7,7 +7,7 @@ with open('readme.md') as f:
   README = f.read()
 
 
-VERSION = '0.0.12'
+VERSION = '0.0.13'
 
 
 setup(

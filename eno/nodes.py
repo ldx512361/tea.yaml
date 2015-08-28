@@ -84,6 +84,7 @@ class Node(object):
       activity: one of sms, call or data
 
     Kwargs:
+      starting_log_size: the expected initial number of messages in the log
       text: blocks until an SMS with this particular text is received
       sender: blocks until a call from this number is received
       target: blocks until data from this target is received
@@ -95,10 +96,10 @@ class Node(object):
     if activity == 'sms':
       # Block until the SMS log has a new entry, or until 10s have elapsed.
       start_time = time.time()
-      start_log_size = len(self.get_log('sms'))
+      starting_log_size = kwargs.pop('starting_log_size', 0)
       while True:
         new_log_size = len(self.get_log('sms'))
-        if new_log_size > start_log_size:
+        if new_log_size > starting_log_size:
           break
         elif time.time() > start_time + timeout:
           break
