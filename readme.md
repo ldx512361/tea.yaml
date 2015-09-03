@@ -42,11 +42,22 @@ The testing machine should have an `~/.enorc` describing the test cluster:
 See additional examples in `server.py` and `sample_test.py`.
 
 
+### testing concurrent calls
+By default, when making a call, the test server
+will make the modem hang up a few seconds after the call connects.
+I experimented with a `/hangup` endpoint but that complicates things --
+we would need signals and some WSGI runner
+in order to have more than one server process.
+So instead you can specify `hangup_after` as a request param,
+this will hangup the call after the specified number of seconds.
+
+
 ### license
 MIT
 
 
 ### releases
+* 0.0.15 - adds call functionality
 * 0.0.14 - adds more request timeouts and `Node.get_info`
 * 0.0.13 - adjusts handling of `Node.wait_for_activity`
 * 0.0.12 - adds protocol in `Node.server_address`

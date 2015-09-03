@@ -68,8 +68,8 @@ class SampleTests(unittest.TestCase):
 
   def test_two_concurrent_calls(self):
     """We can support two simultaneous calls."""
-    self.node_one.call(self.node_two.phone_number, hangup_immediately=False)
-    self.node_three.call(self.node_four.phone_number, hangup_immediately=False)
+    self.node_one.call(self.node_two.phone_number, hangup_after=500)
+    self.node_three.call(self.node_four.phone_number, hangup_after=500)
     # Check that we have two calls going.
     self.assertTrue(
       self.node_two.wait_for_activity(

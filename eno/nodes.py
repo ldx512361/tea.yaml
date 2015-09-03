@@ -40,13 +40,12 @@ class Node(object):
       phone_number: the number to call
 
     Kwargs:
-      hangup_immediately: whether to hangup immediately after the call is
-                          answered (default is True)
+      hangup_after: hangup the call after this number of seconds (default: 5)
     """
-    hangup_immediately = kwargs.get('hangup_immediately', True)
+    hangup_after = kwargs.get('hangup_after', 5)
     data = {
       'phone_number': phone_number,
-      'hangup_immediately': hangup_immediately,
+      'hangup_after': hangup_after,
     }
     endpoint = '%s/call' % self.server_address
     response = requests.post(endpoint, data=data, timeout=10)
