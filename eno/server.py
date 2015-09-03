@@ -21,14 +21,8 @@ from gsmmodem.modem import GsmModem
 from gsmmodem.modem import CmsError
 
 
-PORT = 'UART1'
-DEVICE = '/dev/ttyO1'
-BAUD = 9600
-
-
-# Setup the logger, a serial port, and the flask app.
+# Setup the logger and the flask app.
 logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.DEBUG)
-UART.setup(PORT)
 app = flask.Flask(__name__)
 
 
@@ -41,23 +35,24 @@ def handle_incoming_call(incoming_call):
       incoming_call.hangup()
 
 
-@app.before_first_request
-def setup_modem():
-  """Setup the GSM Modem."""
-  flask.g.modem = GsmModem(
-    DEVICE, BAUD, incomingCallCallbackFunc=handle_incoming_call)
-  flask.g.modem.connect()
+# Setup the GSM Modem.
+PORT = 'UART1'
+DEVICE = '/dev/ttyO1'
+BAUD = 9600
+UART.setup(PORT)
+modem = GsmModem(DEVICE, BAUD, incomingCallCallbackFunc=handle_incoming_call)
+modem.connect()
 
 
 @app.route('/')
 def index():
   """Get Node info."""
   return flask.jsonify(
-    imsi=flask.g.modem.imsi,
-    model=flask.g.modem.model,
-    manufacturer=flask.g.modem.manufacturer,
-    network_name=flask.g.modem.networkName,
-    signal_strength=flask.g.modem.signalStrength,
+    imsi=modem.imsi,
+    model=modem.model,
+    manufacturer=modem.manufacturer,
+    network_name=modem.networkName,
+    signal_strength=modem.signalStrength,
   )
 
 
@@ -70,7 +65,7 @@ def sms():
   phone_number = flask.request.form['phone_number']
   message = flask.request.form['message']
   try:
-    flask.g.modem.sendSms(phone_number, message)
+    modem.sendSms(phone_number, message)
     return ''
   except CmsError as error:
     # CMS error 2172 is raised if there is no network coverage.
@@ -87,7 +82,7 @@ def call():
   """
   phone_number = flask.request.form['phone_number']
   hangup_after = int(flask.request.form['hangup_after'])
-  current_call = flask.g.modem.dial(phone_number)
+  current_call = modem.dial(phone_number)
   start_time = time.time()
   while current_call.active:
     if current_call.answered:
@@ -121,7 +116,7 @@ def log(activity):
   # View the SMS log.
   if flask.request.method == 'GET' and activity == 'sms':
     messages = []
-    for message in flask.g.modem.listStoredSms():
+    for message in modem.listStoredSms():
       messages.append({
         'time': message.time,
         'number': message.number,
@@ -136,5 +131,5 @@ def log(activity):
   # method (you have to specify a valid index, not just 1).  I've found that
   # processStoredSms does the trick though.
   elif flask.request.method == 'DELETE' and activity == 'sms':
-    flask.g.modem.processStoredSms()
+    modem.processStoredSms()
     return ''

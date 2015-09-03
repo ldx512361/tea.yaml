@@ -57,6 +57,7 @@ MIT
 
 
 ### releases
+* 0.0.16 - fixes modem definition
 * 0.0.15 - adds call functionality
 * 0.0.14 - adds more request timeouts and `Node.get_info`
 * 0.0.13 - adjusts handling of `Node.wait_for_activity`
