@@ -31,7 +31,7 @@ class Node(object):
     endpoint = '%s/sms' % self.server_address
     response = requests.post(endpoint, data=data, timeout=10)
     if response.status_code != 200:
-      raise ValueError
+      raise ValueError('%s: %s' % (response.status_code, response.text))
 
   def call(self, phone_number, **kwargs):
     """Make a call.

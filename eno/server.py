@@ -19,6 +19,7 @@ import Adafruit_BBIO.UART as UART
 import flask
 from gsmmodem.modem import GsmModem
 from gsmmodem.modem import CmsError
+from gsmmodem.exceptions import TimeoutException
 
 
 # Setup the logger and the flask app.
@@ -82,13 +83,19 @@ def call():
   """
   phone_number = flask.request.form['phone_number']
   hangup_after = int(flask.request.form['hangup_after'])
-  current_call = modem.dial(phone_number)
+  try:
+    current_call = modem.dial(phone_number)
+  except TimeoutException as error:
+    return 'error: %s' % str(error), 503
   start_time = time.time()
   while current_call.active:
     if current_call.answered:
       if start_time + hangup_after > time.time():
         current_call.hangup()
+        return ''
     time.sleep(1)
+  # The other end hung up.
+  return ''
 
 
 @app.route('/hangup', methods=['POST'])

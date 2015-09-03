@@ -57,6 +57,7 @@ MIT
 
 
 ### releases
+* 0.0.17 - adjusts return values in `server.call`
 * 0.0.16 - fixes modem definition
 * 0.0.15 - adds call functionality
 * 0.0.14 - adds more request timeouts and `Node.get_info`
