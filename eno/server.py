@@ -102,8 +102,8 @@ def log(activity):
   # Setup the GSM modem.
   modem = GsmModem(DEVICE, BAUD)
   modem.connect()
-  # View the SMS log.
   try:
+    # View the SMS log.
     if flask.request.method == 'GET' and activity == 'sms':
       messages = []
       for message in modem.listStoredSms():
