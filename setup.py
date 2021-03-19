@@ -24,7 +24,7 @@ setup(
   install_requires=[
     "Adafruit-BBIO==0.0.30",
     "Flask==0.10.1",
-    "Jinja2==2.8",
+    "Jinja2==2.11.3",
     "MarkupSafe==0.23",
     "PyYAML==3.11",
     "Werkzeug==0.10.4",
