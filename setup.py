@@ -26,7 +26,7 @@ setup(
     "Flask==0.10.1",
     "Jinja2==2.8",
     "MarkupSafe==0.23",
-    "PyYAML==3.11",
+    "PyYAML==5.4",
     "Werkzeug==0.10.4",
     "argparse==1.2.1",
     "itsdangerous==0.24",
