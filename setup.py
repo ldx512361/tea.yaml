@@ -27,7 +27,7 @@ setup(
     "Jinja2==2.8",
     "MarkupSafe==0.23",
     "PyYAML==3.11",
-    "Werkzeug==0.10.4",
+    "Werkzeug==0.15.3",
     "argparse==1.2.1",
     "itsdangerous==0.24",
     "pyserial==2.7",
